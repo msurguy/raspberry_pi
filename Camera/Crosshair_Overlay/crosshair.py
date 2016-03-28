@@ -1,4 +1,5 @@
 import picamera
+import time
 import numpy
 
 crosshairArray = numpy.zeros((480, 640, 3), dtype=numpy.uint8)
@@ -13,7 +14,7 @@ with picamera.PiCamera() as camera:
    camera.led = False
    camera.start_preview()
 
-   overlay = camera.add_overlay(np.getbuffer(crosshairArray), layer = 3, alpha = 64)
+   overlay = camera.add_overlay(numpy.getbuffer(crosshairArray), layer = 3, alpha = 64)
 
    try:
        while True:
