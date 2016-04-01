@@ -1,0 +1,1 @@
+/home/pi/Desktop/GitHub/raspberry_pi/C++/QT_Projects/TestApp/test1-build/CMakeFiles/test1.dir
