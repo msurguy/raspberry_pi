@@ -1,21 +1,21 @@
 import picamera
 import time
 import numpy
-import TextOverlay
+from PIL import Image, ImageDraw, ImageFont
 
 
 # Video Resolution
-txtoverlay = TextOverlay.TextOverlayClass(480, 640)
+VIDEO_HEIGHT = 480
+VIDEO_WIDTH = 640
 
-# Cross Hair Array
-crosshairArray = numpy.zeros((txtoverlay.GetHeight(), txtoverlay.GetWidth(), 3), dtype=numpy.uint8)
-crosshairArray[240, :, :] = 0xff
-crosshairArray[:, 320, :] = 0xff
+# Cross Hair Image
+crossHair = Image.new("RGB", (VIDEO_WIDTH, VIDEO_HEIGHT))
+crossHairPixels = crossHair.load()
+for x in range (0, VIDEO_WIDTH):
+   crossHairPixels[x, 240] = (255, 0, 0)
 
-# Blank Screen
-blankArray = numpy.zeros((VIDEO_HEIGHT, VIDEO_WIDTH, 3), dtype=numpy.uint8)
-
-overlayOn = True
+for x in range(0, VIDEO_HEIGHT):
+   crossHairPixels[320, x] = (255, 0, 0)
 
 with picamera.PiCamera() as camera:
    camera.resolution = (VIDEO_WIDTH, VIDEO_HEIGHT)
@@ -23,19 +23,20 @@ with picamera.PiCamera() as camera:
    camera.led = False
    camera.start_preview()
 
-   overlay = camera.add_overlay(memoryview(crosshairArray), layer = 3, alpha = 20) 
+   img = crossHair.copy()
+   overlay = camera.add_overlay(img.tostring(), layer = 3, alpha = 100) 
 
    time.sleep(1)
    try:
       while True:
-         # Turn overlay off if it's on
-         if overlayOn:
-            overlay.update(memoryview(blankArray))
-         else:
-            overlay.update(memoryview(crosshairArray))
-
-         overlayOn = not overlayOn
+         text = time.strftime('%H:%M:%S', time.gmtime())
+         img = crossHair.copy()
+         draw = ImageDraw.Draw(img)
+         draw.font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 50)
+         draw.text((10, 10), text, (255, 255, 255))
+         
+         overlay.update(img.tostring())
 
          time.sleep(1)
    finally:
-       camera.remove_overlay(overlay)
+      camera.remove_overlay(overlay)
