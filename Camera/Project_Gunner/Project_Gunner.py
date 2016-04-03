@@ -13,6 +13,8 @@ from PIL import Image, ImageDraw, ImageFont
 VIDEO_HEIGHT = 480
 VIDEO_WIDTH = 640
 
+timer = 0
+
 HUD = Hud('Project_Gunner_HUD', VIDEO_WIDTH, VIDEO_HEIGHT)
 
 with picamera.PiCamera() as camera:
@@ -28,12 +30,15 @@ with picamera.PiCamera() as camera:
    time.sleep(1)
    try:
       while True:
-         #HUD.setTime()
          HUD.setReticle()
          #img = HUD.getHud()
+
+         #curTime = int(time.clock())
+         #if(curTime > timer):
+            #HUD.setTime()
+            #timer = curTime
+         
          img = HUD.OutputGUI
          overlay.update(img.tostring())
-
-         #time.sleep(.25)
    finally:
       camera.remove_overlay(overlay)

@@ -36,8 +36,7 @@ class Hud:
 
    def setTime(self):
       text           = time.strftime('%H:%M:%S', time.gmtime())
-      self.OutputGUI = self.__BaseGUI.copy()
-      draw           = ImageDraw.Draw(self.__OutputGUI)
+      draw           = ImageDraw.Draw(self.OutputGUI)
       draw.font      = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 25)
       draw.text((10, 10), text, (255, 255, 255))
 
