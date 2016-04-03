@@ -30,8 +30,8 @@ with picamera.PiCamera() as camera:
       while True:
          #HUD.setTime()
          HUD.setReticle()
-         img = HUD.getHud()
-         
+         #img = HUD.getHud()
+         img = HUD.OutputGUI
          overlay.update(img.tostring())
 
          #time.sleep(.25)
