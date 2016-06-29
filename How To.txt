@@ -16,3 +16,8 @@ GitHub commands:
 		git commit -a
 
 	git push
+
+	1) Add or modify a file
+	2) git add "filename"
+	3) git commit -m "message"
+	4) git push
