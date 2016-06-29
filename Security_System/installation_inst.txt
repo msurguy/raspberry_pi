@@ -1,0 +1,11 @@
+Idea 1:
+Package:
+	sudo apt-get install fswebcam
+
+To take a picture
+	fswebcam -r 1280x720 image2.jpg
+
+
+Idea 2:
+Package:
+	sudo apt-get install motion
