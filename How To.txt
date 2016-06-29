@@ -1,3 +1,18 @@
 To Update OS:
 	sudo apt-get update
 	sudo apt-get upgrade
+
+
+GitHub commands:
+	Modify git options:
+		nano .git/config
+	
+	Add a file
+		git add <filename>
+
+	Commit a change:
+		git commit -m "message"
+			or
+		git commit -a
+
+	git push
