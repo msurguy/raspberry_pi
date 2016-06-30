@@ -4,6 +4,10 @@ To Update OS:
 	sudo apt-get upgrade
 
 	sudo apt-get clean
+
+To change raspi settings:
+	sudo raspi-config
+
 GitHub commands:
 	Modify git options:
 		nano .git/config
