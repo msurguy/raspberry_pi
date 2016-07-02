@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
 
     // Set the image path
-    this->currentImagePath = "/home/pi/Desktop/SecurityCam/currentImage.jpg";
+    this->currentImagePath = "/home/pi/Desktop/CamPictures/motion/currentImage.jpg";
 }
 
 MainWindow::~MainWindow()
@@ -50,7 +50,7 @@ void MainWindow::on_actionStart_System_triggered()
 
 void MainWindow::onTimerEvent()
 {
-    cout << "Repainting image" << endl;
+    //cout << "Repainting image" << endl;
     this->currentImage.load(this->currentImagePath);
     ui->lblCurrentImage->setPixmap(this->currentImage);
 }

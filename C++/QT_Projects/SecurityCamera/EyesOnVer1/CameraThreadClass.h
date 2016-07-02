@@ -18,7 +18,15 @@ protected:
     void run();
 
 private:
-    bool running;
+    enum StateMachineType
+    {
+        STOPPED = 0,
+        START = 1,
+        RUNNING = 2,
+        STOP = 3
+    };
+
+    StateMachineType cameraStateMachine;
 };
 
 #endif // CAMERATHREAD_H

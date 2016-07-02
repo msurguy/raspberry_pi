@@ -1,44 +1,70 @@
 #include "CameraThreadClass.h"
 
+//
+// Constructor
+
+//
 CameraThreadClass::CameraThreadClass()
 {
     cout << "Camera Thread Started" << endl;
-    this->running = false;
-}
+    this->cameraStateMachine = STOPPED;
+} // CameraThreadClass()
 
+//
+// Destructor
+//
 CameraThreadClass::~CameraThreadClass()
 {
     cout << "Camera Thread Ended" << endl;
-}
+} // ~CameraThreadClass()
 
+//
+// Run the Camera Thread
+//
 void CameraThreadClass::run()
 {
-    // Test
-    QString program = "fswebcam";
-    QStringList args;
-    args << "-r" << "640x480" << "/home/pi/Desktop/SecurityCam/currentImage.jpg";
+    // Using FSWebcam
+    QString program = "motion";
+
     QProcess *process = new QProcess();
 
     while(true)
     {
-        if(this->running)
+        switch(this->cameraStateMachine)
         {
-            cout << "Camera Thread running" << endl;
-            process->start(program, args);
-            process->waitForFinished(-1);
+        case START:
+            cout << "Starting Motion Capture software" << endl;
+            process->start(program);
+            this->cameraStateMachine = RUNNING;
+            break;
+        case STOP:
+            cout << "Stopping Motion Capture software" << endl;
             process->close();
-            //sleep(1);
-        }
-        else
-        {
+            this->cameraStateMachine = STOPPED;
+            break;
+        case RUNNING:
+            cout << "Motion Capture software running" << endl;
             sleep(5);
+            break;
+        case STOPPED:
+            sleep(5);
+            break;
         }
-    }
+    } // while true
 
-}
+} // run()
 
-
+//
+// Set the Camera to running
+//
 void CameraThreadClass::setRunning(bool running)
 {
-    this->running = running;
-}
+    if(running)
+    {
+        this->cameraStateMachine = START;
+    }
+    else
+    {
+        this->cameraStateMachine = STOP;
+    }
+} // setRunning()
