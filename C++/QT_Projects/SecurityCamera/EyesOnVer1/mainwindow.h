@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
 #include <iostream>
 
 #include "CameraThreadClass.h"
@@ -22,12 +23,17 @@ public:
 
 private slots:
     void on_actionExit_2_triggered();
-
     void on_actionStart_System_triggered();
+    void onTimerEvent();
 
 private:
     Ui::MainWindow *ui;
     CameraThreadClass *cameraThread;
+    QTimer *timer;
+    QString currentImagePath;
+    QPixmap currentImage;
+
+
 };
 
 #endif // MAINWINDOW_H

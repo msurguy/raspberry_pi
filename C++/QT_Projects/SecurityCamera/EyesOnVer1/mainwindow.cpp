@@ -10,6 +10,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // Start Camera Thread
     this->cameraThread = new CameraThreadClass();
     this->cameraThread->start();
+
+    // Create Timer object
+    this->timer = new QTimer(this);
+    connect(this->timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
+
+    // Set the image path
+    this->currentImagePath = "/home/pi/Desktop/SecurityCam/currentImage.jpg";
 }
 
 MainWindow::~MainWindow()
@@ -30,11 +37,21 @@ void MainWindow::on_actionStart_System_triggered()
     {
         this->cameraThread->setRunning(true);
         ui->actionStart_System->setText("Stop System");
+        this->timer->start(1000);
 
     }
     else
     {
         this->cameraThread->setRunning(false);
         ui->actionStart_System->setText("Start System");
+        this->timer->stop();
     }
 }
+
+void MainWindow::onTimerEvent()
+{
+    cout << "Repainting image" << endl;
+    this->currentImage.load(this->currentImagePath);
+    ui->lblCurrentImage->setPixmap(this->currentImage);
+}
+

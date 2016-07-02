@@ -27,7 +27,7 @@ void CameraThreadClass::run()
             process->start(program, args);
             process->waitForFinished(-1);
             process->close();
-            sleep(1);
+            //sleep(1);
         }
         else
         {

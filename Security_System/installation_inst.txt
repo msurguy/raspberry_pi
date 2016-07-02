@@ -9,3 +9,14 @@ To take a picture
 Idea 2:
 Package:
 	sudo apt-get install motion
+
+-------------------------------------------------------------
+Tools:
+	sudo apt-get install libav-tools imagemagick v4l-utils
+
+Find the video device #
+	
+	ls -ltrh /dev/video*
+
+Find the resolution
+	v4l2-ctl --list-formats-ext -d /dev/video0 | grep Size
