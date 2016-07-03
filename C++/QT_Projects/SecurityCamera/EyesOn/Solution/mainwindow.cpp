@@ -20,12 +20,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set the image path
     this->currentImagePath = "/home/pi/Desktop/CamPictures/motion/currentImage.jpg";
+    this->imageTimer->start(1000);
 } // Constructor
 
 //
 // Main Window Destructor
 MainWindow::~MainWindow()
 {
+    cout << "Exiting program" << endl;
+    this->cameraThread->quit();
+    delete this->cameraThread;
     delete ui;
 } // Destructor
 
@@ -40,9 +44,7 @@ MainWindow::~MainWindow()
 //
 void MainWindow::on_actionExit_2_triggered()
 {
-    cout << "\nClosing App" << endl;
-    this->cameraThread->exit();
-    this->close();
+    delete this;
 } // actionExit()
 
 //
@@ -54,14 +56,11 @@ void MainWindow::on_actionStart_System_triggered()
     {
         this->cameraThread->setRunning(true);
         ui->actionStart_System->setText("Stop System");
-        this->imageTimer->start(1000);
-
     }
     else
     {
         this->cameraThread->setRunning(false);
         ui->actionStart_System->setText("Start System");
-        this->imageTimer->stop();
     }
 } // actionStartStop()
 
