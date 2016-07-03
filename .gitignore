@@ -1,1 +1,5 @@
 C++/QT_Projects/SecurityCamera/EyesOn/Debug
+C++/QT_Projects/SecurityCamera/EyesOn/Release/*.o
+C++/QT_Projects/SecurityCamera/EyesOn/Release/Makefile
+C++/QT_Projects/SecurityCamera/EyesOn/Release/*.h
+C++/QT_Projects/SecurityCamera/EyesOn/Release/*.cpp
