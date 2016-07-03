@@ -26,9 +26,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionExit_2_triggered();
-    void on_actionStart_System_triggered();
+    void on_btnStartSystem_clicked();
     void onImageTimerEvent();
+
 
 private:
     Ui::MainWindow *ui;

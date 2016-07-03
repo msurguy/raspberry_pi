@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Settings.configFilePath = "settings.cfg";
 #endif
     this->readConfigFile();
+    ui->lblCurrentImage->resize(Settings.resolutionWidth, Settings.resolutionHeight);
 
     // Start Camera Thread
     this->cameraThread = new CameraThreadClass();
@@ -26,11 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->imageTimer = new QTimer(this);
     connect(this->imageTimer, SIGNAL(timeout()), this, SLOT(onImageTimerEvent()));
 
-    // Set the image path
-    //Settings.currentImagePath = "/home/pi/Desktop/CamPictures/motion/currentImage.jpg";
-
     // Start the Current Image Timer
     this->imageTimer->start(1000);
+
 } // Constructor
 
 //
@@ -52,30 +51,29 @@ MainWindow::~MainWindow()
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-//
-// Exit action
-//
-void MainWindow::on_actionExit_2_triggered()
-{
-    delete this;
-} // actionExit()
 
 //
 // Start/Stop Action
 //
-void MainWindow::on_actionStart_System_triggered()
+
+void MainWindow::on_btnStartSystem_clicked()
 {
-    if(ui->actionStart_System->text() == "Start System")
+
+    if(ui->btnStartSystem->text() == "Start System")
     {
         this->cameraThread->setRunning(true);
-        ui->actionStart_System->setText("Stop System");
+        ui->btnStartSystem->setText("Stop System");
+        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : red; color : black; }");
+        ui->lblCurrentImageText->setText("Motion Sensor On");
     }
     else
     {
         this->cameraThread->setRunning(false);
-        ui->actionStart_System->setText("Start System");
+        ui->btnStartSystem->setText("Start System");
+        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : green; color : black; }");
+        ui->lblCurrentImageText->setText("Monitor Only");
     }
-} // actionStartStop()
+}
 
 //
 // Timer to load the latest image
@@ -83,7 +81,7 @@ void MainWindow::on_actionStart_System_triggered()
 void MainWindow::onImageTimerEvent()
 {
     this->currentImage.load(Settings.currentImagePath);
-    ui->lblCurrentImage->setPixmap(this->currentImage);
+    ui->lblCurrentImage->setPixmap(this->currentImage.scaled(Settings.resolutionWidth, Settings.resolutionHeight, Qt::KeepAspectRatio));
 } // Image Event Timer
 
 //
@@ -127,3 +125,4 @@ void MainWindow::readConfigFile()
     {
     }
 } // readConfigFile()
+
