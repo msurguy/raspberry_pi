@@ -14,6 +14,7 @@ public:
     ~CameraThreadClass();
 
     void setRunning(bool running);
+    void stopAll();
 
 protected:
     void run();
@@ -24,7 +25,8 @@ private:
         MONITOR_ONLY = 0,
         START_MOTION = 1,
         RUNNING_MOTION = 2,
-        STOP_MOTION = 3
+        STOP_MOTION = 3,
+        QUIT = 4
     };
 
     StateMachineType cameraStateMachine;

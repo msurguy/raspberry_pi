@@ -10,6 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Read the config file
+#ifdef QT_DEBUG
+    Settings.configFilePath = "/home/pi/Desktop/github/raspberry_pi/C++/QT_Projects/SecurityCamera/EyesOn/Release/settings.cfg";
+#else
+    Settings.configFilePath = "settings.cfg";
+#endif
+    this->readConfigFile();
+
     // Start Camera Thread
     this->cameraThread = new CameraThreadClass();
     this->cameraThread->start();
@@ -19,15 +27,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->imageTimer, SIGNAL(timeout()), this, SLOT(onImageTimerEvent()));
 
     // Set the image path
-    this->currentImagePath = "/home/pi/Desktop/CamPictures/motion/currentImage.jpg";
+    //Settings.currentImagePath = "/home/pi/Desktop/CamPictures/motion/currentImage.jpg";
+
+    // Start the Current Image Timer
     this->imageTimer->start(1000);
 } // Constructor
 
 //
 // Main Window Destructor
+//
 MainWindow::~MainWindow()
 {
     cout << "Exiting program" << endl;
+    this->cameraThread->stopAll();
+
     this->cameraThread->quit();
     delete this->cameraThread;
     delete ui;
@@ -69,7 +82,48 @@ void MainWindow::on_actionStart_System_triggered()
 //
 void MainWindow::onImageTimerEvent()
 {
-    this->currentImage.load(this->currentImagePath);
+    this->currentImage.load(Settings.currentImagePath);
     ui->lblCurrentImage->setPixmap(this->currentImage);
 } // Image Event Timer
 
+//
+// Read the Config file for the settings
+//
+void MainWindow::readConfigFile()
+{
+    QFile settingsFile(Settings.configFilePath);
+
+    if(settingsFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream ts(&settingsFile);
+        while(!ts.atEnd())
+        {
+            QString line = ts.readLine();
+            QStringList words = line.split(" ");
+
+            if(words[0] == "Resolution_Width:")
+            {
+                Settings.resolutionWidth = words[1].toInt();
+            }
+            else if(words[0] == "Resolution_Height:")
+            {
+                Settings.resolutionHeight = words[1].toInt();
+            }
+            else if(words[0] == "Monitor_Only_Cfg_File_Path:")
+            {
+                Settings.monitorOnlyConfPath = words[1];
+            }
+            else if(words[0] == "Motion_Cfg_File_Path:")
+            {
+                Settings.motionConfPath = words[1];
+            }
+            else if(words[0] == "Current_Image_Path:")
+            {
+                Settings.currentImagePath = words[1];
+            }
+        } // while not EOF
+    }
+    else
+    {
+    }
+} // readConfigFile()

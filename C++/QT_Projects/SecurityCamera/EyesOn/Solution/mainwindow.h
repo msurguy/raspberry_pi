@@ -3,8 +3,12 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QFile>
+#include <QTextStream>
+#include <QThread>
 #include <iostream>
 
+#include "SettingsClass.h"
 #include "CameraThreadClass.h"
 
 using namespace std;
@@ -28,11 +32,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    SettingsClass Settings;
     CameraThreadClass *cameraThread;
     QTimer *imageTimer;
-    QString currentImagePath;
     QPixmap currentImage;
 
+    void readConfigFile();
 
 };
 

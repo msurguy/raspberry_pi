@@ -75,12 +75,11 @@ void CameraThreadClass::run()
             this->cameraStateMachine = MONITOR_ONLY;
             break;
         case RUNNING_MOTION:
-            //cout << "Motion Capture running" << endl;
-            //sleep(5);
             break;
         case MONITOR_ONLY:
-            //sleep(5);
             break;
+        case QUIT:
+            return;
         }
     } // while true
 
@@ -100,3 +99,11 @@ void CameraThreadClass::setRunning(bool running)
         this->cameraStateMachine = STOP_MOTION;
     }
 } // setRunning()
+
+//
+// Stop all monitoring and get ready to quit the thread
+//
+void CameraThreadClass::stopAll()
+{
+    this->cameraStateMachine = QUIT;
+}

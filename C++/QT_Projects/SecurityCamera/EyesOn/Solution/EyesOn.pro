@@ -17,6 +17,7 @@ SOURCES += main.cpp\
     CameraThreadClass.cpp
 
 HEADERS  += mainwindow.h \
-    CameraThreadClass.h
+    CameraThreadClass.h \
+    SettingsClass.h
 
 FORMS    += mainwindow.ui
