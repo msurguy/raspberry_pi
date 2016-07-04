@@ -32,7 +32,6 @@ echo Compiling Schemas
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas
 
 echo Downloading Chromium
-
 wget https://dl.dropboxusercontent.com/u/87113035/chromium-browser-l10n_48.0.2564.82-0ubuntu0.15.04.1.1193_all.deb
 wget https://dl.dropboxusercontent.com/u/87113035/chromium-browser_48.0.2564.82-0ubuntu0.15.04.1.1193_armhf.deb
 wget https://dl.dropboxusercontent.com/u/87113035/chromium-codecs-ffmpeg-extra_48.0.2564.82-0ubuntu0.15.04.1.1193_armhf.deb
@@ -41,6 +40,11 @@ sudo dpkg -i chromium-browser-l10n_48.0.2564.82-0ubuntu0.15.04.1.1193_all.deb ch
 
 echo Installing Motion Cam
 sudo apt-get install motion
+
+echo Installing Command Line Email client
 sudo apt-get install postfix
 sudo apt-get install sendemail
 sudo apt-get install libio-socket-ssl-perl libnet-ssleay-perl
+
+echo Installing light weight video player
+sudo apt-get install omxplayer
