@@ -24,7 +24,7 @@ emailUN = "eyeson24sc@outlook.com"
 emailPW = "darkCRASH0524*@"
 fromAddress = "eyeson24sc@outlook.com"
 toAddress = "mike.han.83@gmail.com"
-emailSubject = "Alert: Movement Detected"
+emailSubject = "Alert: Movement Detected at " + hour + ":" + minute + ":" + second
 emailBody = "Movement detected at " + hour + ":" + minute + ":" + second
 TLS = "-o tls=yes"
 
@@ -55,7 +55,7 @@ cmd += "-t " + toAddress + " "
 cmd += "-a " + pictureLocation + " "
 
 # Add the video attachment to command
-cmd += "-a " + videoLocation + " "
+#cmd += "-a " + videoLocation + " "
 
 # Add the Subject to the email
 cmd += "-u '" + emailSubject + "' "
