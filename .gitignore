@@ -1,5 +1,5 @@
-C++/QT_Projects/SecurityCamera/EyesOn/Debug
-C++/QT_Projects/SecurityCamera/EyesOn/Release/*.o
-C++/QT_Projects/SecurityCamera/EyesOn/Release/Makefile
-C++/QT_Projects/SecurityCamera/EyesOn/Release/*.h
-C++/QT_Projects/SecurityCamera/EyesOn/Release/*.cpp
+Projects/EyesOn24SC/EyesOn_GUI/Debug
+Projects/EyesOn24SC/EyesOn_GUI/Release/*.o
+Projects/EyesOn24SC/EyesOn_GUI/Release/Makefile
+Projects/EyesOn24SC/EyesOn_GUI/Release/*.h
+Projects/EyesOn24SC/EyesOn_GUI/Release/*.cpp
