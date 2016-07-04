@@ -14,13 +14,13 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef QT_DEBUG
     Settings.configFilePath = "/home/pi/Desktop/github/raspberry_pi/C++/QT_Projects/SecurityCamera/EyesOn/Release/settings.cfg";
 #else
-    Settings.configFilePath = "settings.cfg";
+    Settings.configFilePath = QDir::currentPath() + "/settings.cfg";
 #endif
     this->readConfigFile();
     ui->lblCurrentImage->resize(Settings.resolutionWidth, Settings.resolutionHeight);
 
     // Start Camera Thread
-    this->cameraThread = new CameraThreadClass();
+    this->cameraThread = new CameraThreadClass(Settings);
     this->cameraThread->start();
 
     // Create Timer object

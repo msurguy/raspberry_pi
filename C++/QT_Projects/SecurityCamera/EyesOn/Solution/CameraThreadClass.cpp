@@ -4,7 +4,7 @@
 // Constructor
 
 //
-CameraThreadClass::CameraThreadClass()
+CameraThreadClass::CameraThreadClass(SettingsClass Settings)
 {
     cout << "Camera Thread Started" << endl;
     this->cameraStateMachine = MONITOR_ONLY;
@@ -13,15 +13,13 @@ CameraThreadClass::CameraThreadClass()
     this->motionProgram = "motion";
 
     // Monitor only vars
-    this->monitorOnlyConfPath = QDir::currentPath() + "/motion_monitorOnly.conf";
-    this->monitorOnlyArgs << "-c" << this->monitorOnlyConfPath;
+    this->monitorOnlyArgs << "-c" << Settings.monitorOnlyConfPath;
 
     // Motion and monitor vars
-    this->motionConfPath = QDir::currentPath() + "/motion_Movement.conf";
-    this->motionArgs << "-c" << this->motionConfPath;
+    this->motionArgs << "-c" << Settings.motionConfPath;
 
     // Start the monitor only process
-    cout << "Starting motion only" << endl;
+    cout << "Starting monitor only" << endl;
     this->process = new QProcess();
     this->process->start(this->motionProgram, this->monitorOnlyArgs);
 } // CameraThreadClass()
@@ -31,9 +29,10 @@ CameraThreadClass::CameraThreadClass()
 //
 CameraThreadClass::~CameraThreadClass()
 {
+    sleep(1);
     if(this->process)
     {
-        cout << "Stopping monitor" << endl;
+        cout << "Stopping motion process" << endl;
         this->process->close();
         this->process->waitForFinished(0);
         delete this->process;
@@ -47,29 +46,28 @@ CameraThreadClass::~CameraThreadClass()
 //
 void CameraThreadClass::run()
 {
-
     while(true)
     {
         switch(this->cameraStateMachine)
         {
         case START_MOTION:
             // Stop the monitor only
-            cout << "Stopping monitor only" << endl;
+            cout << "   Stopping monitor only" << endl;
             this->process->close();
             delete this->process;
 
-            cout << "Starting Motion and monitor" << endl;
+            cout << "   Starting Motion and monitor" << endl;
             this->process = new QProcess();
             this->process->start(this->motionProgram, this->motionArgs);
             this->cameraStateMachine = RUNNING_MOTION;
             break;
         case STOP_MOTION:
-            cout << "Stopping Motion and monitor" << endl;
+            cout << "   Stopping Motion and monitor" << endl;
             this->process->close();
             delete this->process;
 
             // Start the monitor only process
-            cout << "Starting monitor only" << endl;
+            cout << "   Starting monitor only" << endl;
             this->process = new QProcess();
             this->process->start(this->motionProgram, this->monitorOnlyArgs);
             this->cameraStateMachine = MONITOR_ONLY;
@@ -81,6 +79,7 @@ void CameraThreadClass::run()
         case QUIT:
             return;
         }
+        sleep(1);
     } // while true
 
 } // run()

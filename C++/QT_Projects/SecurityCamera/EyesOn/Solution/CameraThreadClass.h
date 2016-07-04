@@ -5,12 +5,14 @@
 #include <QDir>
 #include <iostream>
 
+#include "SettingsClass.h"
+
 using namespace std;
 
 class CameraThreadClass : public QThread
 {
 public:
-    CameraThreadClass();
+    CameraThreadClass(SettingsClass Settings);
     ~CameraThreadClass();
 
     void setRunning(bool running);
