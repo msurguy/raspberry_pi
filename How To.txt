@@ -26,3 +26,18 @@ GitHub commands:
 	2) git add "filename"
 	3) git commit -m "message"
 	4) git push
+
+Sending email using postfix
+	mail -a /home/pi/Desktop/CamPictures/motion/motionImage.jpg -s "Alert: Movement Detected %H:%M:%S" mike.han.83+EyesOn@gmail.com
+
+Sending email using sendEmail
+	sendEmail 
+		"from"    -f eyeson24sc@outlook.com 
+		"to"      -t mike.han.83@gmail.com 
+		"attach"  -a /home/pi/Desktop/CamPictures/motion/motionImage.jpg 
+		"Subject" -u "Alert: Movement Detected %H:%M:%S" 
+		"Msg"     -m "Movement found"
+		"server"  -s smtp-mail.outlook.com:587
+		"UN"      -xu eyeson24sc@outlook.com
+		"PWD"     -xp fewafewaffwa
+		"TLS"     -o tls=yes
