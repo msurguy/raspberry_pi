@@ -41,6 +41,6 @@ sudo dpkg -i chromium-browser-l10n_48.0.2564.82-0ubuntu0.15.04.1.1193_all.deb ch
 
 echo Installing Motion Cam
 sudo apt-get install motion
-#sudo apt-get install postfix
+sudo apt-get install postfix
 sudo apt-get install sendemail
 sudo apt-get install libio-socket-ssl-perl libnet-ssleay-perl
