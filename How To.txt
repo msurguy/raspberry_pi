@@ -8,6 +8,10 @@ To Update OS:
 To change raspi settings:
 	sudo raspi-config
 
+To remove programs installed
+	sudo apt-get purge NAMEOFPROG
+	sudo apt-get autoremove
+
 GitHub commands:
 	Modify git options:
 		nano .git/config

@@ -30,12 +30,22 @@ private slots:
     void onImageTimerEvent();
 
 
+    void on_tbxStatus_textChanged();
+
 private:
+    enum ColorStateMachineType
+    {
+        ORANGE = 0,
+        RED = 1,
+        GREEN = 2
+    };
+
     Ui::MainWindow *ui;
     SettingsClass Settings;
     CameraThreadClass *cameraThread;
     QTimer *imageTimer;
     QPixmap currentImage;
+    ColorStateMachineType colorStateMachine;
 
     void readConfigFile();
 

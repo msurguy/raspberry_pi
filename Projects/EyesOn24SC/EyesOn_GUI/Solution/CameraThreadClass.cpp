@@ -4,9 +4,12 @@
 // Constructor
 
 //
-CameraThreadClass::CameraThreadClass(SettingsClass Settings)
+CameraThreadClass::CameraThreadClass(SettingsClass Settings, QTextEdit *tbxStatus)
 {
+    this->tbxStatus = tbxStatus;
+
     cout << "Camera Thread Started" << endl;
+    this->tbxStatus->append("Camera Thread Started");
     this->cameraStateMachine = MONITOR_ONLY;
 
     // Motion program vars
@@ -20,6 +23,7 @@ CameraThreadClass::CameraThreadClass(SettingsClass Settings)
 
     // Start the monitor only process
     cout << "Starting monitor only" << endl;
+    this->tbxStatus->append("Starting monitor only");
     this->process = new QProcess();
     this->process->start(this->motionProgram, this->monitorOnlyArgs);
 } // CameraThreadClass()
@@ -32,12 +36,13 @@ CameraThreadClass::~CameraThreadClass()
     sleep(1);
     if(this->process)
     {
-        cout << "Stopping motion process" << endl;
+        this->tbxStatus->append("Stopping Motion process");
         this->process->close();
         this->process->waitForFinished(0);
         delete this->process;
     }
 
+    this->tbxStatus->append("Camera Thread Ended");
     cout << "Camera Thread Ended" << endl;
 } // ~CameraThreadClass()
 
@@ -52,22 +57,22 @@ void CameraThreadClass::run()
         {
         case START_MOTION:
             // Stop the monitor only
-            cout << "   Stopping monitor only" << endl;
+            this->tbxStatus->append("--Stopping Monitor");
             this->process->close();
             delete this->process;
 
-            cout << "   Starting Motion and monitor" << endl;
+            this->tbxStatus->append("--Starting Motion Detection");
             this->process = new QProcess();
             this->process->start(this->motionProgram, this->motionArgs);
             this->cameraStateMachine = RUNNING_MOTION;
             break;
         case STOP_MOTION:
-            cout << "   Stopping Motion and monitor" << endl;
+            this->tbxStatus->append("--Stopping Motion Detection");
             this->process->close();
             delete this->process;
 
             // Start the monitor only process
-            cout << "   Starting monitor only" << endl;
+            this->tbxStatus->append("--Starting Monitor");
             this->process = new QProcess();
             this->process->start(this->motionProgram, this->monitorOnlyArgs);
             this->cameraStateMachine = MONITOR_ONLY;

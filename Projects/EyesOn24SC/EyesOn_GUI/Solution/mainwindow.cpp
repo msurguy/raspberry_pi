@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lblCurrentImage->resize(Settings.resolutionWidth, Settings.resolutionHeight);
 
     // Start Camera Thread
-    this->cameraThread = new CameraThreadClass(Settings);
+    this->cameraThread = new CameraThreadClass(Settings, ui->tbxStatus);
     this->cameraThread->start();
 
     // Create Timer object
@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Start the Current Image Timer
     this->imageTimer->start(1000);
 
+    this->colorStateMachine = ORANGE;
+
 } // Constructor
 
 //
@@ -37,9 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 //
 MainWindow::~MainWindow()
 {
-    cout << "Exiting program" << endl;
+    ui->tbxStatus->append("-----Exiting System-----");
     this->cameraThread->stopAll();
-
     this->cameraThread->quit();
     delete this->cameraThread;
     delete ui;
@@ -58,20 +59,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnStartSystem_clicked()
 {
-
     if(ui->btnStartSystem->text() == "Start System")
     {
         this->cameraThread->setRunning(true);
         ui->btnStartSystem->setText("Stop System");
         ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : red; color : black; }");
         ui->lblCurrentImageText->setText("Motion Sensor On");
+        this->colorStateMachine = RED;
     }
     else
     {
         this->cameraThread->setRunning(false);
         ui->btnStartSystem->setText("Start System");
-        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : green; color : black; }");
+        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : orange; color : black; }");
         ui->lblCurrentImageText->setText("Monitor Only");
+        this->colorStateMachine = ORANGE;
     }
 }
 
@@ -82,6 +84,22 @@ void MainWindow::onImageTimerEvent()
 {
     this->currentImage.load(Settings.currentImagePath);
     ui->lblCurrentImage->setPixmap(this->currentImage.scaled(Settings.resolutionWidth, Settings.resolutionHeight, Qt::KeepAspectRatio));
+
+    switch(this->colorStateMachine)
+    {
+    case RED:
+        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : green; color : black; }");
+        this->colorStateMachine = GREEN;
+        break;
+    case GREEN:
+        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : red; color : black; }");
+        this->colorStateMachine = RED;
+        break;
+    default:
+        ui->lblCurrentImageText->setStyleSheet("QLabel { background-color : orange; color : black; }");
+        this->colorStateMachine = ORANGE;
+        break;
+    }
 } // Image Event Timer
 
 //
@@ -126,3 +144,10 @@ void MainWindow::readConfigFile()
     }
 } // readConfigFile()
 
+
+void MainWindow::on_tbxStatus_textChanged()
+{
+    QTextCursor cursor = ui->tbxStatus->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->tbxStatus->setTextCursor(cursor);
+}
