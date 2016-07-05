@@ -10,6 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // There is a bug with Motion, you need to run FSWebCam first to set the device properly
+    QProcess *process = new QProcess();
+    QString program = "fswebcam";
+    QStringList args;
+    args << "-r" << "640x480" << "--device" << "/dev/video0";
+    process->start(program, args);
+    process->waitForFinished(-1);
+
     // Read the config file
 #ifdef QT_DEBUG
     Settings.configFilePath = "/home/pi/Desktop/github/raspberry_pi/Projects/EyesOn24SC/EyesOn_GUI/Release/settings.cfg";

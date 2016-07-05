@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QThread>
+#include <QProcess>
 #include <iostream>
 
 #include "SettingsClass.h"

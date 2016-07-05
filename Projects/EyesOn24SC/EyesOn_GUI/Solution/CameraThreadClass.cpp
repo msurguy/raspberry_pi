@@ -61,6 +61,8 @@ void CameraThreadClass::run()
             this->process->close();
             delete this->process;
 
+            //sleep(2);
+
             this->tbxStatus->append("--Starting Motion Detection");
             this->process = new QProcess();
             this->process->start(this->motionProgram, this->motionArgs);
@@ -70,6 +72,8 @@ void CameraThreadClass::run()
             this->tbxStatus->append("--Stopping Motion Detection");
             this->process->close();
             delete this->process;
+
+            //sleep(2);
 
             // Start the monitor only process
             this->tbxStatus->append("--Starting Monitor");
