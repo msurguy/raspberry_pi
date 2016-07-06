@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     args << "-r" << "640x480" << "--device" << "/dev/video0";
     process->start(program, args);
     process->waitForFinished(-1);
+    delete process;
 
     // Read the config file
 #ifdef QT_DEBUG
@@ -25,10 +26,11 @@ MainWindow::MainWindow(QWidget *parent) :
     Settings.configFilePath = QDir::currentPath() + "/settings.cfg";
 #endif
     this->readConfigFile();
+    this->currentImage.size() = (QSize(Settings.resolutionWidth, Settings.resolutionHeight));
     ui->lblCurrentImage->resize(Settings.resolutionWidth, Settings.resolutionHeight);
 
     // Start Camera Thread
-    this->cameraThread = new CameraThreadClass(Settings, ui->tbxStatus);
+    this->cameraThread = new CameraThreadClass(this, Settings, ui->tbxStatus);
     this->cameraThread->start();
 
     // Create Timer object
@@ -36,10 +38,27 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->imageTimer, SIGNAL(timeout()), this, SLOT(onImageTimerEvent()));
 
     // Start the Current Image Timer
-    this->imageTimer->start(1000);
+    this->imageTimer->start(250);
 
     this->colorStateMachine = ORANGE;
 
+#ifdef NO_NOT_COMPILE
+    // Use webcam IP address for picture
+    QUrl page;
+    QWebView *m_view = new QWebView(this);
+    connect(m_view, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
+    page.setScheme("http");
+    page.setHost("127.0.0.1");
+    page.setPort(8081);
+    m_view->load(page);
+    m_view->show();
+    QWebElement element = m_view->page()->mainFrame()->documentElement();
+    element = element.findFirst("img");
+    QPainter painter(&this->currentImage);
+    element.render(&painter);
+    this->currentImage.save("/home/pi/Desktop/github/raspberry_pi/Projects/EyesOn24SC/EyesOn_GUI/Release/picture.jpg");
+    ui->lblCurrentImage->setPixmap(this->currentImage);
+#endif
 } // Constructor
 
 //
@@ -90,8 +109,12 @@ void MainWindow::on_btnStartSystem_clicked()
 //
 void MainWindow::onImageTimerEvent()
 {
+#ifndef USE_JPG
     this->currentImage.load(Settings.currentImagePath);
     ui->lblCurrentImage->setPixmap(this->currentImage.scaled(Settings.resolutionWidth, Settings.resolutionHeight, Qt::KeepAspectRatio));
+#else
+    ui->lblCurrentImage->setPixmap(this->currentImage);
+#endif
 
     switch(this->colorStateMachine)
     {
@@ -109,6 +132,18 @@ void MainWindow::onImageTimerEvent()
         break;
     }
 } // Image Event Timer
+
+
+//
+// Web Cam IP finished loading
+//
+#ifdef NO_NOT_COMPILE
+void MainWindow::onLoadFinished(bool var)
+{
+
+    ui->lblCurrentImage->setPixmap(this->currentImage);
+} // Web Cam image load
+#endif
 
 //
 // Read the Config file for the settings

@@ -6,7 +6,11 @@
 #include <QFile>
 #include <QTextStream>
 #include <QThread>
+#include <QWebView>
+#include <QWebFrame>
+#include <QWebElement>
 #include <QProcess>
+
 #include <iostream>
 
 #include "SettingsClass.h"
@@ -29,7 +33,9 @@ public:
 private slots:
     void on_btnStartSystem_clicked();
     void onImageTimerEvent();
-
+#ifdef NO_NOT_COMPILE
+    void onLoadFinished(bool var);
+#endif
 
     void on_tbxStatus_textChanged();
 

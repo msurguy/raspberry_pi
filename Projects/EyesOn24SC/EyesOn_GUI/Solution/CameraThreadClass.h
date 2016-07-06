@@ -1,6 +1,7 @@
 #ifndef CAMERATHREADCLASS_H
 #define CAMERATHREADCLASS_H
 #include <QThread>
+#include <QObject>
 #include <QTextEdit>
 #include <QProcess>
 #include <QDir>
@@ -12,8 +13,9 @@ using namespace std;
 
 class CameraThreadClass : public QThread
 {
+
 public:
-    CameraThreadClass(SettingsClass Settings, QTextEdit *tbxStatus);
+    CameraThreadClass(QObject *parent, SettingsClass Settings, QTextEdit *tbxStatus);
     ~CameraThreadClass();
 
     void setRunning(bool running);
@@ -21,6 +23,11 @@ public:
 
 protected:
     void run();
+
+private Q_SLOTS:
+    void error(QProcess::ProcessError);
+    void finished(int, QProcess::ExitStatus);
+    void stateChanged(QProcess::ProcessState);
 
 private:
     enum CameraStateMachineType
