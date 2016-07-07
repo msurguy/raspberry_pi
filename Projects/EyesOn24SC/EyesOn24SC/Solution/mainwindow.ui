@@ -33,7 +33,7 @@
      <number>3</number>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -54,11 +54,15 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color : orange; 
+color : black;</string>
+    </property>
     <property name="frameShape">
      <enum>QFrame::WinPanel</enum>
     </property>
     <property name="text">
-     <string/>
+     <string>Monitor Only</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

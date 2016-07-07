@@ -13,18 +13,35 @@ MainWindow::MainWindow(QWidget *parent) :
     // Read the config file
     this->readConfigFile();
 
+    // Configure motion program
+    this->configureMotion();
+
     // Create Timer object
     this->imageTimer = new QTimer(this);
     connect(this->imageTimer, SIGNAL(timeout()), this, SLOT(onImageTimerEvent()));
 
     // Start the Current Image Timer
-    this->imageTimer->start(1000);
+    this->imageTimer->start(500);
 
     this->colorState = ORANGE;
 }
 
 MainWindow::~MainWindow()
 {
+    if(this->monitorProcess->pid() != 0 && this->monitorProcess->state() == QProcess::Running)
+    {
+        cout << "Terminating Monitor Process" << endl;
+        this->monitorProcess->kill();
+        this->monitorProcess->waitForFinished();
+    }
+    if(this->motionProcess->pid() != 0 && this->motionProcess->state() == QProcess::Running)
+    {
+        cout << "Terminating Motion Detection Process" << endl;
+        this->motionProcess->kill();
+        this->motionProcess->waitForFinished();
+    }
+    delete this->monitorProcess;
+    delete this->motionProcess;
     delete ui;
 }
 
@@ -44,9 +61,9 @@ void MainWindow::on_btnStartSystem_clicked()
     {
         //this->cameraThread->setRunning(true);
         ui->btnStartSystem->setText("Stop System");
-        ui->lblCurrentStatus->setStyleSheet("QLabel { background-color : red; color : black; }");
+        ui->lblCurrentStatus->setStyleSheet("QLabel { background-color : green; color : black; }");
         ui->lblCurrentStatus->setText("Motion Sensor On");
-        this->colorState = RED;
+        this->cameraState = STOP_MONITOR;
     }
     else
     {
@@ -54,7 +71,7 @@ void MainWindow::on_btnStartSystem_clicked()
         ui->btnStartSystem->setText("Start System");
         ui->lblCurrentStatus->setStyleSheet("QLabel { background-color : orange; color : black; }");
         ui->lblCurrentStatus->setText("Monitor Only");
-        this->colorState = ORANGE;
+        this->cameraState = STOP_MOTION;
     }
 } // btnClicked()
 
@@ -66,6 +83,43 @@ void MainWindow::onImageTimerEvent()
     this->currentImage.load(Settings.currentImagePath);
     ui->lblCurrentImage->setPixmap(this->currentImage.scaled(Settings.resolutionWidth, Settings.resolutionHeight, Qt::KeepAspectRatio));
 
+    switch(this->cameraState)
+    {
+    case START_MONITOR:
+        ui->tbxStatus->appendPlainText("Starting Monitor Only");
+        this->monitorProcess->start(this->motionProgram, this->monitorOnlyArgs);
+        this->monitorProcess->waitForStarted();
+        this->colorState = ORANGE;
+        this->cameraState = RUNNING_MONITOR;
+        break;
+    case RUNNING_MONITOR:
+        cout << this->monitorProcess->pid() << endl;
+        if(this->monitorProcess->state() != QProcess::Running || this->monitorProcess->pid() == 0)
+        {
+            ui->tbxStatus->appendPlainText("Camera Crashed! Restarting last state (RUNNING_MONITOR)");
+            this->monitorProcess->kill();
+            this->cameraState = START_MONITOR;
+        }
+        break;
+    case STOP_MONITOR:
+        this->cameraState = START_MOTION;
+        ui->tbxStatus->appendPlainText("Stopping Monitor Only");
+        break;
+    case START_MOTION:
+        this->colorState = GREEN;
+        this->cameraState = RUNNING_MOTION;
+        ui->tbxStatus->appendPlainText("Starting Motion Detectioon");
+        break;
+    case RUNNING_MOTION:
+        break;
+    case STOP_MOTION:
+        this->cameraState = START_MONITOR;
+        ui->tbxStatus->appendPlainText("Stopping Motion Detection");
+        break;
+    case QUIT:
+        break;
+    }
+
     switch(this->colorState)
     {
     case RED:
@@ -76,9 +130,8 @@ void MainWindow::onImageTimerEvent()
         ui->lblCurrentStatus->setStyleSheet("QLabel { background-color : red; color : black; }");
         this->colorState = RED;
         break;
-    default:
+    case ORANGE:
         ui->lblCurrentStatus->setStyleSheet("QLabel { background-color : orange; color : black; }");
-        this->colorState = ORANGE;
         break;
     }
 } // Image Event Timer
@@ -103,6 +156,22 @@ void MainWindow::startFsWebcam()
     delete process;
 } // startFsWebcam()
 
+//
+// Configure the Motion program vars
+//
+void MainWindow::configureMotion()
+{
+    this->cameraState = START_MONITOR;
+    this->motionProgram = "motion";
+
+    // Monitor only vars
+    this->monitorProcess = new QProcess();
+    this->monitorOnlyArgs << "-c" << Settings.monitorOnlyConfPath;
+
+    // Motion and monitor vars
+    this->motionProcess = new QProcess();
+    this->motionArgs << "-c" << Settings.motionConfPath;
+} // configureMotion()
 
 //
 // Read the Config file for the settings

@@ -35,6 +35,16 @@ private:
         RED = 1,
         GREEN = 2
     };
+    enum CameraStateMachineType
+    {
+        START_MONITOR,
+        RUNNING_MONITOR,
+        STOP_MONITOR,
+        START_MOTION,
+        RUNNING_MOTION,
+        STOP_MOTION,
+        QUIT
+    };
 
     // Attributes
     Ui::MainWindow *ui;
@@ -43,10 +53,26 @@ private:
     QPixmap currentImage;
     ColorStateMachineType colorState;
 
+    // Camera Vars
+    CameraStateMachineType cameraState;
+
+    // Motion program vars
+    QString motionProgram;
+
+    // Motion program variables for monitor only
+    QProcess *monitorProcess;
+    QString monitorOnlyConfPath;
+    QStringList monitorOnlyArgs;
+
+    // Motion program variables for motion and monitor
+    QProcess *motionProcess;
+    QString motionConfPath;
+    QStringList motionArgs;
 
     // Methods
     void startFsWebcam();
     void readConfigFile();
+    void configureMotion();
 };
 
 #endif // MAINWINDOW_H
