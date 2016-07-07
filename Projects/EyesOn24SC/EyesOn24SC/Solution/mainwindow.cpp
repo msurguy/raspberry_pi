@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->imageTimer, SIGNAL(timeout()), this, SLOT(onImageTimerEvent()));
 
     // Start the Current Image Timer
-    this->imageTimer->start(500);
+    this->imageTimer->start(1000);
 
     this->colorState = ORANGE;
 }
@@ -42,6 +42,7 @@ MainWindow::~MainWindow()
     }
     delete this->monitorProcess;
     delete this->motionProcess;
+    delete this->imageTimer;
     delete ui;
 }
 
@@ -93,28 +94,45 @@ void MainWindow::onImageTimerEvent()
         this->cameraState = RUNNING_MONITOR;
         break;
     case RUNNING_MONITOR:
-        cout << this->monitorProcess->pid() << endl;
+        cout << "Monitor Process ID: " << this->monitorProcess->pid() << endl;
         if(this->monitorProcess->state() != QProcess::Running || this->monitorProcess->pid() == 0)
         {
+            cout << "Camera Crashed! Restarting last state (RUNNING_MONITOR)" << endl;
             ui->tbxStatus->appendPlainText("Camera Crashed! Restarting last state (RUNNING_MONITOR)");
             this->monitorProcess->kill();
+            this->monitorProcess->waitForFinished();
             this->cameraState = START_MONITOR;
         }
         break;
     case STOP_MONITOR:
-        this->cameraState = START_MOTION;
         ui->tbxStatus->appendPlainText("Stopping Monitor Only");
+        this->monitorProcess->kill();
+        this->monitorProcess->waitForFinished();
+        this->cameraState = START_MOTION;
         break;
     case START_MOTION:
+        ui->tbxStatus->appendPlainText("Starting Motion Detection");
+        this->motionProcess->start(this->motionProgram, this->motionArgs);
+        this->motionProcess->waitForStarted();
         this->colorState = GREEN;
         this->cameraState = RUNNING_MOTION;
-        ui->tbxStatus->appendPlainText("Starting Motion Detectioon");
         break;
     case RUNNING_MOTION:
+        cout << "Motion ProcessID : " << this->motionProcess->pid() << endl;
+        if(this->motionProcess->state() != QProcess::Running || this->motionProcess->pid() == 0)
+        {
+            cout << "Camera Crashed! Restarting last state (RUNNING_MOTION)" << endl;
+            ui->tbxStatus->appendPlainText("Camera Crashed! Restarting last state (RUNNING_MOTION)");
+            this->motionProcess->kill();
+            this->motionProcess->waitForFinished();
+            this->cameraState = START_MOTION;
+        }
         break;
     case STOP_MOTION:
-        this->cameraState = START_MONITOR;
         ui->tbxStatus->appendPlainText("Stopping Motion Detection");
+        this->motionProcess->kill();
+        this->motionProcess->waitForFinished();
+        this->cameraState = START_MONITOR;
         break;
     case QUIT:
         break;
