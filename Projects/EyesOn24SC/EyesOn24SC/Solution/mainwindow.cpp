@@ -169,7 +169,7 @@ void MainWindow::startFsWebcam()
     QProcess *process = new QProcess();
     QString program = "fswebcam";
     QStringList args;
-    args << "-r" << "640x480" << "--device" << "/dev/video0";
+    args << "-r" << "1280x720" << "--device" << "/dev/video0";
     process->start(program, args);
     process->waitForFinished(-1);
     delete process;

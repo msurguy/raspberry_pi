@@ -45,3 +45,6 @@ Sending email using sendEmail
 		"UN"      -xu eyeson24sc@outlook.com
 		"PWD"     -xp fewafewaffwa
 		"TLS"     -o tls=yes
+
+Camera Resolutions
+	v4l2-ctl --list-formats-ext
