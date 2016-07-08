@@ -10,8 +10,9 @@ echo Update the Firmware
 sudo rpi-update
 
 echo Installing QT
-sudo apt-get install qt4-dev-tools
 sudo apt-get install qtcreator
+sudo apt-get install qt5-qmake
+sudo apt-get install qt5-default
 sudo apt-get install gcc
 sudo apt-get install cmake
 sudo apt-get install git-core
@@ -48,3 +49,7 @@ sudo apt-get install libio-socket-ssl-perl libnet-ssleay-perl
 
 echo Installing light weight video player
 sudo apt-get install omxplayer
+
+echo Installing Mono
+sudo apt-get install mono-complete
+sudo apt-get install monodevelop

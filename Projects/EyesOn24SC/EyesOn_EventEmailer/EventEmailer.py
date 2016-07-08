@@ -17,12 +17,20 @@ hour = sys.argv[5]
 minute = sys.argv[6]
 second = sys.argv[7]
 
+# Email account settings for Outlook.com
+#smtp = "smtp-mail.outlook.com:587"
+#emailUN = "eyeson24sc@outlook.com"
+#emailPW = "darkCRASH0524*@"
+#fromAddress = "eyeson24sc@outlook.com"
+
+# Email account settings for Gmail.com
+smtp = "smtp.gmail.com:587"
+emailUN = "eyeson24sc@gmail.com"
+emailPW = "darkCRASH0524*@"
+fromAddress = "EyesOn24 SecurityCam <eyeson24sc@gmail.com>"
+
 # Settings for the email client
 emailClient = "sendEmail"
-smtp = "smtp-mail.outlook.com:587"
-emailUN = "eyeson24sc@outlook.com"
-emailPW = "darkCRASH0524*@"
-fromAddress = "eyeson24sc@outlook.com"
 toAddress = "mike.han.83@gmail.com"
 emailSubject = "Alert: Movement Detected at " + hour + ":" + minute + ":" + second
 emailBody = "Movement detected at " + hour + ":" + minute + ":" + second
@@ -46,7 +54,7 @@ cmd = "echo Sending Email | "
 cmd += emailClient + " "
 
 # Add the from address
-cmd += "-f " + fromAddress + " "
+cmd += "-f '" + fromAddress + "' "
 
 # Add the to address
 cmd += "-t " + toAddress + " "
