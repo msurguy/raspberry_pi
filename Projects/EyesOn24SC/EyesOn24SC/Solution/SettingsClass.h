@@ -9,6 +9,7 @@ public:
     QString currentImagePath;
     int resolutionWidth;
     int resolutionHeight;
+    int frameRate;
     QString monitorOnlyConfPath;
     QString motionConfPath;
 };

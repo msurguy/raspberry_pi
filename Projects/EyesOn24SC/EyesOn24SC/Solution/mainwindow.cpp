@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->imageTimer, SIGNAL(timeout()), this, SLOT(onImageTimerEvent()));
 
     // Start the Current Image Timer
-    this->imageTimer->start(1000);
+    this->imageTimer->start(1000 / Settings.frameRate);
 
     this->colorState = ORANGE;
 }
@@ -82,7 +82,10 @@ void MainWindow::on_btnStartSystem_clicked()
 void MainWindow::onImageTimerEvent()
 {
     this->currentImage.load(Settings.currentImagePath);
-    ui->lblCurrentImage->setPixmap(this->currentImage.scaled(Settings.resolutionWidth, Settings.resolutionHeight, Qt::KeepAspectRatio));
+    if(!this->currentImage.isNull())
+    {
+        ui->lblCurrentImage->setPixmap(this->currentImage.scaled(Settings.resolutionWidth, Settings.resolutionHeight, Qt::KeepAspectRatio));
+    }
 
     switch(this->cameraState)
     {
@@ -94,7 +97,7 @@ void MainWindow::onImageTimerEvent()
         this->cameraState = RUNNING_MONITOR;
         break;
     case RUNNING_MONITOR:
-        cout << "Monitor Process ID: " << this->monitorProcess->pid() << endl;
+        //cout << "Monitor Process ID: " << this->monitorProcess->pid() << endl;
         if(this->monitorProcess->state() != QProcess::Running || this->monitorProcess->pid() == 0)
         {
             cout << "Camera Crashed! Restarting last state (RUNNING_MONITOR)" << endl;
@@ -118,7 +121,7 @@ void MainWindow::onImageTimerEvent()
         this->cameraState = RUNNING_MOTION;
         break;
     case RUNNING_MOTION:
-        cout << "Motion ProcessID : " << this->motionProcess->pid() << endl;
+        //cout << "Motion ProcessID : " << this->motionProcess->pid() << endl;
         if(this->motionProcess->state() != QProcess::Running || this->motionProcess->pid() == 0)
         {
             cout << "Camera Crashed! Restarting last state (RUNNING_MOTION)" << endl;
@@ -133,8 +136,6 @@ void MainWindow::onImageTimerEvent()
         this->motionProcess->kill();
         this->motionProcess->waitForFinished();
         this->cameraState = START_MONITOR;
-        break;
-    case QUIT:
         break;
     }
 
@@ -219,6 +220,10 @@ void MainWindow::readConfigFile()
             else if(words[0] == "Resolution_Height:")
             {
                 Settings.resolutionHeight = words[1].toInt();
+            }
+            else if(words[0] == "Frame_Rate:")
+            {
+                Settings.frameRate = words[1].toInt();
             }
             else if(words[0] == "Monitor_Only_Cfg_File_Path:")
             {

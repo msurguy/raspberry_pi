@@ -42,8 +42,7 @@ private:
         STOP_MONITOR,
         START_MOTION,
         RUNNING_MOTION,
-        STOP_MOTION,
-        QUIT
+        STOP_MOTION
     };
 
     // Attributes
